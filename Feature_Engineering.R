@@ -15,8 +15,9 @@ CrossTable(train$TARGET, train$saldo_var6, chisq = TRUE)
 
 vars <- read.csv('Features_Engineering.csv')
 for (i in 1:313) {
-    if (vars[i,'Feature']=='as.facor') {
+    if (vars[i,'Feature']=='as.factor') {
         train[,i] <- as.factor(train[,i])
         test[,i] <- as.factor(test[,i])
     }
 }
+#Modify in the excel
