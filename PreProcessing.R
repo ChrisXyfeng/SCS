@@ -6,8 +6,8 @@ require(caret)
 rm(list = ls())
 gc()
 
-train <- as.data.frame(fread("train.csv"))
-test <- as.data.frame(fread("test.csv"))
+train <- as.data.frame(fread("train.csv", integer64 = 'numeric'))
+test <- as.data.frame(fread("test.csv", integer64 = 'numeric'))
 
 ##### Removing IDs
 train$ID <- NULL
