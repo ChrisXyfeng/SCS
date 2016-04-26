@@ -12,26 +12,25 @@ trainIndex <- createDataPartition(train$TARGET, p = .8,
                                   times = 1)
 train <- train[ trainIndex,]
 cal  <- train[-trainIndex,]
-#Sparse Matrix
 label_train <- as.factor(train$TARGET)
 label_cal <- as.factor(cal$TARGET)
 train$TARGET <- cal$TARGET <- NULL
-#Matrix
-#train <- as.matrix(~., data = train)
-#cal <- as.matrix(~., data = cal)
 
+#Sparse Matrix
+train <- sparse.model.matrix(~., data = train)
+cal <- sparse.model.matrix(~., data = cal)
+#Matrix
 train <- as.matrix(train)
 cal <- as.matrix(cal)
+
 #Models in Caret
 control_clf <- trainControl(method = "cv",
                             number = 5,
-                            savePredictions = "final")
+                            savePredictions = TRUE)
 grid_rf_1 <- expand.grid(mtry=1)
 set.seed(130622)
 clf_rf_1 <- train(x=train, y=label_train,
-                 method = "rf",
-                 trControl = control_clf,
-                 verbose = FALSE,
-                 tunegrid = grid_rf_1)
-
-
+                  method = "rf",
+                  trControl = control_clf,
+                  verbose = FALSE,
+                  tunegrid = grid_rf_1)
