@@ -4,18 +4,18 @@ require(Matrix)
 rm(list = ls())
 gc(reset = TRUE)
 
-#Split data
-train <- as.data.frame(fread("train_pre.csv", integer64 = 'numeric'))
-set.seed(130622)
-trainIndex <- createDataPartition(train$TARGET, p = .8,
-                                  list = FALSE,
-                                  times = 1)
-train <- train[ trainIndex,]
-cal  <- train[-trainIndex,]
-write.csv(train, "train_split.csv", row.names = FALSE)
-write.csv(cal, "cal_split.csv", row.names = FALSE)
+######################################Split Data###########################################
+# train <- as.data.frame(fread("train_pre.csv", integer64 = 'numeric'))
+# set.seed(130622)
+# trainIndex <- createDataPartition(train$TARGET, p = .8,
+#                                   list = FALSE,
+#                                   times = 1)
+# train <- train[ trainIndex,]
+# cal  <- train[-trainIndex,]
+# write.csv(train, "train_split.csv", row.names = FALSE)
+# write.csv(cal, "cal_split.csv", row.names = FALSE)
 
-#Let's Model !
+##################################Let's Model !############################################
 train <- as.data.frame(fread("train_split.csv", integer64 = 'numeric'))
 cal <- as.data.frame(fread("cal_split.csv", integer64 = 'numeric'))
 test <- as.data.frame(fread("test_pre.csv", integer64 = 'numeric'))
