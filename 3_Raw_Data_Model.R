@@ -20,6 +20,7 @@ train <- as.data.frame(fread("train_split.csv", integer64 = 'numeric'))
 cal <- as.data.frame(fread("cal_split.csv", integer64 = 'numeric'))
 test <- as.data.frame(fread("test_pre.csv", integer64 = 'numeric'))
 label_train <- as.factor(train$TARGET)
+levels(label_train) <- c("Neg", "Pos")
 label_cal <- as.factor(cal$TARGET)
 train$TARGET <- cal$TARGET <- NULL
 
