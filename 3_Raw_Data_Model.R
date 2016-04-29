@@ -6,8 +6,8 @@ rm(list = ls())
 gc(reset = TRUE)
 
 ##################################Let's Model !############################################
-train <- as.data.frame(fread("train_mem.csv", integer64 = 'numeric'))
-test <- as.data.frame(fread("test_mem.csv", integer64 = 'numeric'))
+train <- as.data.frame(fread("train_pre.csv", integer64 = 'numeric'))
+test <- as.data.frame(fread("test_pre.csv", integer64 = 'numeric'))
 label_train <- as.factor(train$TARGET)
 levels(label_train) <- c("Neg", "Pos")
 train$TARGET <- NULL
@@ -106,7 +106,7 @@ tune_xgb_4 <- data.frame(nrounds = 560,
                          max_depth = 5,
                          eta = 0.0202048,
                          gamma = 0,
-                         colsample_bytree = 0.701,
+                         colsample_bytree = 1,
                          min_child_weight = 1)
 
 set.seed(130622)
@@ -150,22 +150,3 @@ meta_test_xgb_5 <- predict(clf_xgb_5, test, type = "prob")
 
 write.csv(meta_train_xgb_5, "meta_train_xgb_5.csv", row.names = FALSE)
 write.csv(meta_test_xgb_5, "meta_test_xgb_5.csv", row.names = FALSE)
-
-###########knn_1
-tune_knn_1 <- data.frame(k = 16)
-
-set.seed(130622)
-clf_knn_1 <- train(x=train, y=label_train,
-                   method = "knn",
-                   metric = "ROC",
-                   trControl = control_clf,
-                   tuneGrid = tune_knn_1)
-clf_knn_1
-meta_train_knn_1 <- clf_knn_1$pred
-meta_train_knn_1 <- meta_train_knn_1[order(meta_train_knn_1$rowIndex),]
-
-#Predictive on the Cal and Test
-meta_test_knn_1 <- predict(clf_knn_1, test, type = "prob")
-
-write.csv(meta_train_knn_1, "meta_train_knn_1.csv", row.names = FALSE)
-write.csv(meta_test_knn_1, "meta_test_knn_1.csv", row.names = FALSE)
