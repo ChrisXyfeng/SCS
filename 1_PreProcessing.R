@@ -1,4 +1,5 @@
 setwd("C:/Users/Mavis Xue Home/Desktop/Bigdata/SCS")
+setwd("C:/Documents and Settings/xueyu/Bureau/BD/Santander Customer Satisfaction")
 require(xgboost)
 require(data.table)
 require(dplyr)
@@ -11,49 +12,31 @@ test <- as.data.frame(fread("test.csv", integer64 = 'numeric'))
 
 ##### Removing IDs
 train$ID <- NULL
-test.id <- test$ID
 test$ID <- NULL
 
-##### Extracting TARGET
-train.y <- train$TARGET
-train$TARGET <- NULL
 
 ##### 0 count per line
 count0 <- function(x) {
-    return( sum(x == 0) )
+  return( sum(x == 0) )
 }
 train$n0 <- apply(train, 1, FUN=count0)
 test$n0 <- apply(test, 1, FUN=count0)
 
 ##### Removing constant features
-cat("\n## Removing the constants features.\n")
 for (f in names(train)) {
-    if (length(unique(train[[f]])) == 1) {
-        cat(f, "is constant in train. We delete it.\n")
-        train[[f]] <- NULL
-        test[[f]] <- NULL
-    }
+  if (length(unique(train[[f]])) == 1) {
+    train[[f]] <- NULL
+    test[[f]] <- NULL
+  }
 }
 
-##### Removing identical features
-features_pair <- combn(names(train), 2, simplify = F)
-toRemove <- c()
-for(pair in features_pair) {
-    f1 <- pair[1]
-    f2 <- pair[2]
-    
-    if (!(f1 %in% toRemove) & !(f2 %in% toRemove)) {
-        if (all(train[[f1]] == train[[f2]])) {
-            cat(f1, "and", f2, "are equals.\n")
-            toRemove <- c(toRemove, f2)
-        }
-    }
-}
+#Remove_HighCorr
+train_corr <- cor(train)
+high_corr <- findCorrelation(train_corr, 0.99)
 
-feature.names <- setdiff(names(train), toRemove)
+# returns an index of column numbers for removal
+train <- train[, -high_corr]
+test <- test[, -high_corr]
 
-train <- train[, feature.names]
-test <- test[, feature.names]
-train$TARGET <- train.y
 write.csv(train, "train_pre.csv",row.names = FALSE)
 write.csv(test, "test_pre.csv",row.names = FALSE)
